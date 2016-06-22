@@ -169,6 +169,7 @@ The response body will echo back the submitted job description including the ID 
 * `name` (`string`) - **Optional.** Name of job.
 * `environment` (`array` of `envVar`) - **Optional.** List of environment variables. Environment variables specified at the job level will be injected into **all** job steps.
 * `steps` (`array` of `step`) - **Required.** List of job steps.
+* `input` (`string`) - **Optional.** Base64 encoded input that will be passed to first step's *stdin* stream.
 
 *envVar*
 
