@@ -1,6 +1,7 @@
 package job
 
 import (
+	b64 "encoding/base64"
 	"bufio"
 	"bytes"
 	"fmt"
@@ -8,6 +9,7 @@ import (
 	"io/ioutil"
 	"os"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -59,6 +61,12 @@ func (jm *jobManager) Execute(job *Job) error {
 
 	jm.repository.Update(job.ID, fieldStatus, status)
 	jm.repository.Update(job.ID, fieldCreatedAt, createdAt.String())
+
+	// Propagate stdIn with data if provided
+	if job.Input != "" {
+		input := strings.NewReader(job.Input)
+		capture = b64.NewDecoder(b64.StdEncoding, input)
+	}
 
 	for i := range job.Steps {
 		capture, err = jm.executeStep(job, capture)

@@ -1,7 +1,9 @@
 package job
 
 import (
+	"bytes"
 	"errors"
+	"io"
 	"testing"
 
 	"github.com/stretchr/testify/mock"
@@ -96,7 +98,14 @@ func (suite *JobManagerTestSuite) TestGetLog() {
 }
 
 func (suite *JobManagerTestSuite) TestExecuteSuccess() {
-	suite.e.On("Start", suite.job, mock.Anything, mock.Anything, mock.Anything).Return(nil)
+	// Base64 encoded string "foo"
+	suite.job.Input = "Zm9v"
+
+	suite.e.On("Start", suite.job, mock.MatchedBy(func(stdIn io.Reader) bool {
+		buffer := new(bytes.Buffer)
+		buffer.ReadFrom(stdIn)
+		return buffer.String() == "foo"
+	}), mock.Anything, mock.Anything).Return(nil)
 	suite.e.On("Inspect", suite.job).Return(nil)
 	suite.e.On("CleanUp", suite.job).Return(nil)
 

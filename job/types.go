@@ -51,6 +51,7 @@ type Job struct {
 	Status         string      `json:"status,omitempty"`
 	CreatedAt      string      `json:"createdAt,omitempty"`
 	FinishedIn     float64     `json:"finishedIn,omitempty"`
+	Input          string      `json:"input,omitempty"`
 }
 
 // CurrentStep returns the first JobStep from the list which has not yet
