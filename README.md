@@ -359,6 +359,15 @@ Deletes all the information persisted for a given job ID. Note that this will **
 * **404** - no such job
 * **500** - server error
 
+## Default environment variables
+
+Additional variables are passed to running steps:
+
+* `DRAY_JOB_ID` - job ID
+* `DRAY_JOB_NAME` - job name (empty if not provided)
+* `DRAY_CURRENT_STEP_INDEX` - current step index (zero based)
+* `DRAY_CURRENT_STEP_NAME` - current step name (empty if not provided)
+
 ## Output Channels
 One of the key features that Dray provides is the ability to marshal data between the different steps (containers) in a job. By default, Dray will capture anything written to the container's *stdout* stream and automatically feed that into the next container's *stdin* stream. However, different output channels can be configured on a step-by-step basis.
 

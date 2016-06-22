@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+0.11.0 - 2016-06-22
+-------------------
+### Added
+- Passing environment variables describing job and current step
+- Storing job creation time and how long did it take
+- Allowing to pass `stdIn` to the first step
+
 0.10.0 - 2015-03-19
 -------------------
 ### Added
