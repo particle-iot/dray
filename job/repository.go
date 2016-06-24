@@ -25,18 +25,19 @@ func (s NotFoundError) Error() string {
 
 type redisJobRepository struct {
 	pool *pool.Pool
+	auth string
 }
 
 // NewJobRepository returns a new JobRepository instance with a connection to
 // the specified Redis endpoint.
-func NewJobRepository(host string) JobRepository {
+func NewJobRepository(host string, auth string) JobRepository {
 	pool, err := pool.NewPool("tcp", host, 4)
 	if err != nil {
 		log.Errorf("Error instantiating Redis pool: %s", err)
 		panic(err)
 	}
 
-	return &redisJobRepository{pool: pool}
+	return &redisJobRepository{pool: pool, auth: auth}
 }
 
 func (r *redisJobRepository) All() ([]Job, error) {
@@ -127,6 +128,17 @@ func (r *redisJobRepository) command(cmd string, args ...interface{}) *redis.Rep
 		return &redis.Reply{Err: err}
 	}
 	defer r.pool.Put(client)
+
+	// If authentication was provided, use if for this connection
+	if r.auth != "" {
+		authReply := client.Cmd("auth", r.auth)
+		if authReply.Err != nil {
+			if _, ok := authReply.Err.(*redis.CmdError); !ok {
+				authReply.Err = errors.New("Redis authentication error")
+			}
+			return authReply
+		}
+	}
 
 	reply := client.Cmd(cmd, args...)
 

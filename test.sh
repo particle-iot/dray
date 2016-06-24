@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker run -v $(pwd):/src centurylink/golang-tester
+docker run --rm -v $(pwd):/src centurylink/golang-tester
