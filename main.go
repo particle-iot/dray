@@ -27,7 +27,7 @@ func main() {
 	port := flag.Int("p", 3000, "port on which the server will run")
 	flag.Parse()
 
-	r := job.NewJobRepository(redisHost())
+	r := job.NewJobRepository(redisHost(), redisAuth())
 	e := job.NewExecutor(dockerEndpoint())
 	jm := job.NewJobManager(r, e)
 
@@ -35,7 +35,7 @@ func main() {
 	s.Start(*port)
 }
 
-func redisHost() string {
+func redisUrl() *url.URL {
 	redisPort := os.Getenv("REDIS_PORT")
 
 	if len(redisPort) == 0 {
@@ -48,7 +48,23 @@ func redisHost() string {
 		panic(err)
 	}
 
+	return u
+}
+
+func redisHost() string {
+	u := redisUrl()
+
 	return u.Host
+}
+
+func redisAuth() string {
+	u := redisUrl()
+	p := ""
+
+	if (u.User != nil) {
+		p, _ = u.User.Password()
+	}
+	return p
 }
 
 func dockerEndpoint() string {
