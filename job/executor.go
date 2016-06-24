@@ -93,7 +93,7 @@ func (e *jobStepExecutor) createContainer(j *Job) (string, error) {
 
 	if step.usesFilePipe() {
 		opts.HostConfig = &docker.HostConfig{
-			Binds: []string{fmt.Sprintf("%s:%s", step.filePipePath(), step.Output)},
+			Binds: []string{fmt.Sprintf("%s:%s", j.currentStepFilePipePath(), step.Output)},
 		}
 	}
 
