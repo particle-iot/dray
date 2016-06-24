@@ -1,7 +1,6 @@
 package job // import "github.com/CenturyLinkLabs/dray/job"
 
 import (
-	"crypto/md5"
 	"fmt"
 	"io"
 	"strconv"
@@ -80,6 +79,12 @@ func (j Job) currentStepEnvironment() Environment {
 	return append(defaultEnvironment, j.currentStep().Environment...)
 }
 
+// CurrentStepFilePipePath returns file pipe path for the current step based on
+// job's ID and step's index
+func (j Job) currentStepFilePipePath() string {
+	return fmt.Sprintf("/tmp/%s-%d", j.ID, j.StepsCompleted)
+}
+
 // JobStep represents one of the individual steps in a Dray Job. A job step is
 // the name of the Docker image that should be executed along with some
 // metadata used to control the execution of that image.
@@ -105,10 +110,6 @@ func (js JobStep) usesStdErrPipe() bool {
 
 func (js JobStep) usesFilePipe() bool {
 	return strings.HasPrefix(js.Output, "/")
-}
-
-func (js JobStep) filePipePath() string {
-	return fmt.Sprintf("/tmp/%x", md5.Sum([]byte(js.Source)))
 }
 
 func (js JobStep) usesDelimitedOutput() bool {

@@ -109,13 +109,13 @@ func (jm *jobManager) executeStep(job *Job, stdIn io.Reader) (io.Reader, error) 
 	stdErrReader, stdErrWriter := io.Pipe()
 
 	if step.usesFilePipe() {
-		f, err := os.Create(step.filePipePath())
+		f, err := os.Create(job.currentStepFilePipePath())
 		if err != nil {
 			return nil, err
 		}
 
 		f.Close()
-		defer os.Remove(step.filePipePath())
+		defer os.Remove(job.currentStepFilePipePath())
 	} else {
 		buffer := &bytes.Buffer{}
 		stepOutput = buffer
@@ -153,7 +153,7 @@ func (jm *jobManager) executeStep(job *Job, stdIn io.Reader) (io.Reader, error) 
 
 	if step.usesFilePipe() {
 		// Grab data written to pipe file
-		b, err := ioutil.ReadFile(step.filePipePath())
+		b, err := ioutil.ReadFile(job.currentStepFilePipePath())
 		if err != nil {
 			return nil, err
 		}
