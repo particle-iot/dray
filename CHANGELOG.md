@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+0.12.0 - 2016-06-24
+-------------------
+### Added
+- Allowing to use Redis instances using authentication
+
+### Fixed
+- Concurrent jobs crashing if using the same file pipe
+
 0.11.0 - 2016-06-22
 -------------------
 ### Added
