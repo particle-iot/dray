@@ -1,5 +1,5 @@
 dray:
-  image: centurylink/dray
+  image: ${IMAGE_NAME}
   links:
    - redis
   volumes:
