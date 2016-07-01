@@ -84,6 +84,8 @@ func (suite *JobStepExecutorTestSuite) TestStart_Success() {
 	stdOutReader, stdOutWriter := io.Pipe()
 	_, stdErrWriter := io.Pipe()
 
+	suite.mux.RegisterResp("GET", "/version", http.StatusOK,
+		"{\"Version\":\"1.2.3\"}")
 	suite.mux.RegisterResp("GET", "/images/foo/json", http.StatusOK,
 		"{\"ID\":\"xyz789\"}")
 	suite.mux.RegisterResp("POST", "/containers/create", http.StatusCreated,
@@ -128,6 +130,8 @@ func (suite *JobStepExecutorTestSuite) TestStart_StartError() {
 	stdOutReader, stdOutWriter := io.Pipe()
 	_, stdErrWriter := io.Pipe()
 
+	suite.mux.RegisterResp("GET", "/version", http.StatusOK,
+		"{\"Version\":\"1.2.3\"}")
 	suite.mux.RegisterResp("GET", "/images/foo/json", http.StatusOK,
 		"{\"ID\":\"xyz789\"}")
 	suite.mux.RegisterResp("POST", "/containers/create", http.StatusCreated,
@@ -155,6 +159,8 @@ func (suite *JobStepExecutorTestSuite) TestStart_MissingImage() {
 	stdOutReader, stdOutWriter := io.Pipe()
 	_, stdErrWriter := io.Pipe()
 
+	suite.mux.RegisterResp("GET", "/version", http.StatusOK,
+		"{\"Version\":\"1.2.3\"}")
 	suite.mux.RegisterResp("GET", "/images/foo/json", http.StatusNotFound, "")
 	suite.mux.RegisterResp("POST", "/images/create", http.StatusOK, "")
 	suite.mux.RegisterResp("POST", "/containers/create", http.StatusCreated,
@@ -197,6 +203,8 @@ func (suite *JobStepExecutorTestSuite) TestStart_ForceRefresh() {
 	stdOutReader, stdOutWriter := io.Pipe()
 	_, stdErrWriter := io.Pipe()
 
+	suite.mux.RegisterResp("GET", "/version", http.StatusOK,
+		"{\"Version\":\"1.2.3\"}")
 	suite.mux.RegisterResp("GET", "/images/foo/json", http.StatusOK,
 		"{\"Id\":\"xyz890\"}")
 	suite.mux.RegisterResp("POST", "/images/create", http.StatusOK, "")
