@@ -105,6 +105,10 @@ func (r *redisJobRepository) Delete(jobID string) error {
 
 func (r *redisJobRepository) Update(jobID, attr, value string) error {
 	reply := r.command("hset", jobKey(jobID), attr, value)
+
+	// Publish field update message
+	defer r.command("publish", jobID + ":" + attr, value)
+
 	return reply.Err
 }
 
