@@ -12,8 +12,9 @@ type ConfigSpecification struct {
 	DockerHost   string `envconfig:"DOCKER_HOST" default:"unix:///var/run/docker.sock"`
 	LogLevel     string `envconfig:"LOG_LEVEL" default:"info"`
 	RedisPort    string `envconfig:"REDIS_PORT"`
-	JobsKey      string `default:"jobs"`
+	JobsKey      string `envconfig:"DRAY_JOBS_KEY" default:"jobs"`
 	KeyTTL       int `envconfig:"DRAY_KEY_TTL"`
+	RemoveDone   bool `envconfig:"DRAY_REMOVE_DONE"`
 }
 
 type configurator struct {
@@ -23,7 +24,7 @@ type configurator struct {
 var instance *configurator
 var once sync.Once
 
-func GetConfig() ConfigSpecification {
+func GetConfig() *ConfigSpecification {
 	once.Do(func() {
 		var c ConfigSpecification
 		err := envconfig.Process("dray", &c)
@@ -33,7 +34,7 @@ func GetConfig() ConfigSpecification {
 
 		instance = &configurator{config: c}
 	})
-	return instance.config
+	return &instance.config
 }
 
 func GetDefaultValue(name string) interface{} {

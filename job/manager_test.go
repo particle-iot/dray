@@ -8,6 +8,7 @@ import (
 
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
+	"github.com/CenturyLinkLabs/dray/util"
 )
 
 type JobManagerTestSuite struct {
@@ -169,6 +170,29 @@ func (suite *JobManagerTestSuite) TestExecuteOutputLogging() {
 	resultErr := suite.jm.Execute(suite.job)
 
 	suite.Nil(resultErr)
+}
+
+func (suite *JobManagerTestSuite) TestRemoveDone() {
+	config := util.GetConfig()
+	oldRemoveDone := config.RemoveDone
+	config.RemoveDone = true
+
+	suite.e.On("Start", suite.job, mock.Anything, mock.Anything, mock.Anything).Return(nil)
+	suite.e.On("Inspect", suite.job).Return(nil)
+	suite.e.On("CleanUp", suite.job).Return(nil)
+
+	suite.r.On("Update", suite.job.ID, "status", "running").Return(nil)
+	suite.r.On("Update", suite.job.ID, "completedSteps", "1").Return(nil)
+	suite.r.On("Update", suite.job.ID, "status", "complete").Return(nil)
+	suite.r.On("Update", suite.job.ID, "createdAt", mock.Anything).Return(nil)
+	suite.r.On("Update", suite.job.ID, "finishedIn", mock.Anything).Return(nil)
+	suite.r.On("DeleteFromIndex", suite.job.ID).Return(nil)
+
+	resultErr := suite.jm.Execute(suite.job)
+
+	suite.Nil(resultErr)
+
+	config.RemoveDone = oldRemoveDone
 }
 
 func TestJobManagerTestSuite(t *testing.T) {

@@ -14,6 +14,7 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/CenturyLinkLabs/dray/util"
 )
 
 const (
@@ -88,6 +89,9 @@ func (jm *jobManager) Execute(job *Job) error {
 	jm.repository.Update(job.ID, fieldStatus, status)
 	finishedIn := float32(time.Since(createdAt)) / float32(time.Second)
 	jm.repository.Update(job.ID, fieldFinishedIn, fmt.Sprintf("%f", finishedIn))
+	if util.GetConfig().RemoveDone {
+		jm.repository.DeleteFromIndex(job.ID)
+	}
 	return err
 }
 
