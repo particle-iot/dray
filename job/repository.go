@@ -83,7 +83,9 @@ func (r *redisJobRepository) Create(job *Job) error {
 	totalSteps := string(len(job.Steps))
 	reply = r.command("hmset", jobKey(job.ID), "totalSteps", totalSteps, "completedSteps", "0", "status", "")
 
-	defer r.command("expire", jobKey(job.ID), 60)
+	if (util.GetConfig().KeyTTL > 0) {
+		defer r.command("expire", jobKey(job.ID), util.GetConfig().KeyTTL)
+	}
 
 	return reply.Err
 }
@@ -128,6 +130,10 @@ func (r *redisJobRepository) GetJobLog(jobID string, index int) (*JobLog, error)
 
 func (r *redisJobRepository) AppendLogLine(jobID, logLine string) error {
 	reply := r.command("rpush", jobLogKey(jobID), logLine)
+
+	if (util.GetConfig().KeyTTL > 0) {
+		defer r.command("expire", jobLogKey(jobID), util.GetConfig().KeyTTL)
+	}
 	return reply.Err
 }
 

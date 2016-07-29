@@ -13,6 +13,7 @@ type ConfigSpecification struct {
 	LogLevel     string `envconfig:"LOG_LEVEL" default:"info"`
 	RedisPort    string `envconfig:"REDIS_PORT"`
 	JobsKey      string `default:"jobs"`
+	KeyTTL       int `envconfig:"DRAY_KEY_TTL"`
 }
 
 type configurator struct {
