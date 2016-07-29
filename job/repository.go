@@ -9,10 +9,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/fzzy/radix/extra/pool"
 	"github.com/fzzy/radix/redis"
-)
-
-const (
-	jobsKey = "jobs"
+	"github.com/CenturyLinkLabs/dray/util"
 )
 
 // NotFoundError is an error returned when a referenced Job cannot be found.
@@ -43,7 +40,7 @@ func NewJobRepository(host string, auth string) JobRepository {
 func (r *redisJobRepository) All() ([]Job, error) {
 	jobs := []Job{}
 
-	jobIDs, err := r.command("lrange", jobsKey, 0, -1).List()
+	jobIDs, err := r.command("lrange", util.GetConfig().JobsKey, 0, -1).List()
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +75,7 @@ func (r *redisJobRepository) Get(jobID string) (*Job, error) {
 func (r *redisJobRepository) Create(job *Job) error {
 	job.ID = pseudoUUID()
 
-	reply := r.command("rpush", jobsKey, job.ID)
+	reply := r.command("rpush", util.GetConfig().JobsKey, job.ID)
 	if reply.Err != nil {
 		return reply.Err
 	}
@@ -92,7 +89,7 @@ func (r *redisJobRepository) Create(job *Job) error {
 }
 
 func (r *redisJobRepository) DeleteFromIndex(jobID string) error {
-	reply :=  r.command("lrem", jobsKey, 0, jobID)
+	reply :=  r.command("lrem", util.GetConfig().JobsKey, 0, jobID)
 	return reply.Err
 }
 
@@ -165,11 +162,11 @@ func (r *redisJobRepository) command(cmd string, args ...interface{}) *redis.Rep
 }
 
 func jobKey(jobID string) string {
-	return fmt.Sprintf("%s:%s", jobsKey, jobID)
+	return fmt.Sprintf("%s:%s", util.GetConfig().JobsKey, jobID)
 }
 
 func jobLogKey(jobID string) string {
-	return fmt.Sprintf("%s:%s:log", jobsKey, jobID)
+	return fmt.Sprintf("%s:%s:log", util.GetConfig().JobsKey, jobID)
 }
 
 func pseudoUUID() (uuid string) {

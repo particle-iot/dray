@@ -12,6 +12,7 @@ type ConfigSpecification struct {
 	DockerHost   string `envconfig:"DOCKER_HOST" default:"unix:///var/run/docker.sock"`
 	LogLevel     string `envconfig:"LOG_LEVEL" default:"info"`
 	RedisPort    string `envconfig:"REDIS_PORT"`
+	JobsKey      string `default:"jobs"`
 }
 
 type configurator struct {

@@ -116,6 +116,8 @@ Environment variables can be passed to the Dray container by using the `-e` flag
       -p 3000:3000 \
       centurylink/dray:latest
 
+* `DRAY_JOBS_KEY` - prefix used for setting Redis keys. Default is `jobs`.
+
 ## Example
 Below is an actual Dray job description that is being used as part of the [Panamax](http://panamax.io/) project. The goal of this job is to provision a cluster of servers on AWS and then install some software on those servers.
 
