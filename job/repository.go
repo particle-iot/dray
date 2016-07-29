@@ -85,16 +85,24 @@ func (r *redisJobRepository) Create(job *Job) error {
 
 	totalSteps := string(len(job.Steps))
 	reply = r.command("hmset", jobKey(job.ID), "totalSteps", totalSteps, "completedSteps", "0", "status", "")
+
+	defer r.command("expire", jobKey(job.ID), 60)
+
+	return reply.Err
+}
+
+func (r *redisJobRepository) DeleteFromIndex(jobID string) error {
+	reply :=  r.command("lrem", jobsKey, 0, jobID)
 	return reply.Err
 }
 
 func (r *redisJobRepository) Delete(jobID string) error {
-	reply := r.command("lrem", jobsKey, 0, jobID)
-	if reply.Err != nil {
-		return reply.Err
+	errorReply := r.DeleteFromIndex(jobID)
+	if errorReply != nil {
+		return errorReply
 	}
 
-	reply = r.command("del", jobKey(jobID))
+	reply := r.command("del", jobKey(jobID))
 	if reply.Err != nil {
 		return reply.Err
 	}

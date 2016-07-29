@@ -25,6 +25,7 @@ type JobRepository interface {
 	All() ([]Job, error)
 	Get(jobID string) (*Job, error)
 	Create(job *Job) error
+	DeleteFromIndex(jobID string) error
 	Delete(jobID string) error
 	Update(jobID, attr, value string) error
 	GetJobLog(jobID string, index int) (*JobLog, error)

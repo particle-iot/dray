@@ -23,6 +23,11 @@ func (m *mockRepository) Create(job *Job) error {
 	return args.Error(0)
 }
 
+func (m *mockRepository) DeleteFromIndex(jobID string) error {
+	args := m.Mock.Called(jobID)
+	return args.Error(0)
+}
+
 func (m *mockRepository) Delete(jobID string) error {
 	args := m.Mock.Called(jobID)
 	return args.Error(0)
