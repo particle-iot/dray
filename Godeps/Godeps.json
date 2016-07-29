@@ -1,7 +1,7 @@
 {
 	"ImportPath": "github.com/CenturyLinkLabs/dray",
 	"GoVersion": "go1.6",
-	"GodepVersion": "v70",
+	"GodepVersion": "v74",
 	"Packages": [
 		"./..."
 	],
@@ -119,6 +119,11 @@
 		{
 			"ImportPath": "github.com/hashicorp/go-cleanhttp",
 			"Rev": "ad28ea4487f05916463e2423a55166280e8254b5"
+		},
+		{
+			"ImportPath": "github.com/kelseyhightower/envconfig",
+			"Comment": "1.1.0-17-g91921eb",
+			"Rev": "91921eb4cf999321cdbeebdba5a03555800d493b"
 		},
 		{
 			"ImportPath": "github.com/opencontainers/runc/libcontainer/user",

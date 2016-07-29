@@ -3,22 +3,16 @@ package main // import "github.com/CenturyLinkLabs/dray"
 import (
 	"flag"
 	"net/url"
-	"os"
 	"strings"
 
 	"github.com/CenturyLinkLabs/dray/api"
 	"github.com/CenturyLinkLabs/dray/job"
+	"github.com/CenturyLinkLabs/dray/util"
 	log "github.com/Sirupsen/logrus"
 )
 
-const (
-	defaultDockerEndpoint = "unix:///var/run/docker.sock"
-	defaultLogLevel       = log.InfoLevel
-)
-
 func init() {
-	log.SetOutput(os.Stdout)
-	log.SetLevel(defaultLogLevel)
+
 }
 
 func main() {
@@ -36,7 +30,7 @@ func main() {
 }
 
 func redisUrl() *url.URL {
-	redisPort := os.Getenv("REDIS_PORT")
+	redisPort := util.GetConfig().RedisPort
 
 	if len(redisPort) == 0 {
 		log.Error("Missing required REDIS_PORT environment variable")
@@ -68,26 +62,18 @@ func redisAuth() string {
 }
 
 func dockerEndpoint() string {
-	endpoint := os.Getenv("DOCKER_HOST")
-
-	if len(endpoint) == 0 {
-		endpoint = defaultDockerEndpoint
-	}
+	endpoint := util.GetConfig().DockerHost
 
 	return endpoint
 }
 
 func logLevel() log.Level {
-	levelString := os.Getenv("LOG_LEVEL")
-
-	if len(levelString) == 0 {
-		return defaultLogLevel
-	}
+	levelString := util.GetConfig().LogLevel
 
 	level, err := log.ParseLevel(strings.ToLower(levelString))
 	if err != nil {
 		log.Errorf("Invalid log level: %s", levelString)
-		return defaultLogLevel
+		return log.InfoLevel
 	}
 
 	return level
