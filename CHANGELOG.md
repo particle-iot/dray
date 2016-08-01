@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+0.13.0 - 2016-08-01
+-------------------
+### Added
+- Publishing PubSub message when updating a job
+- Allow expiring Redis keys storing job info
+- Allow removing job from index after being done
+
 0.12.0 - 2016-06-24
 -------------------
 ### Added
