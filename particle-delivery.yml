@@ -1,0 +1,7 @@
+# note; this is not active yet
+---
+cloud_services:
+  dray:
+    webhook_behavior:
+      on_create_tag:
+      - deploy_to_default_cloud
