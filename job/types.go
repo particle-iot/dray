@@ -30,6 +30,7 @@ type JobRepository interface {
 	Update(jobID, attr, value string) error
 	GetJobLog(jobID string, index int) (*JobLog, error)
 	AppendLogLine(jobID, logLine string) error
+	PublishMessage(jobID, title, message string) error
 }
 
 // JobStepExecutor is the interface that wraps the methods necessary to turn

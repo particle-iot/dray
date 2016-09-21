@@ -70,6 +70,7 @@ func (jm *jobManager) Execute(job *Job) error {
 	}
 
 	for i := range job.Steps {
+		jm.repository.PublishMessage(job.ID, "executeStep", job.currentStep().Source)
 		capture, err = jm.executeStep(job, capture)
 
 		if err != nil {

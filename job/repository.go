@@ -137,6 +137,12 @@ func (r *redisJobRepository) AppendLogLine(jobID, logLine string) error {
 	return reply.Err
 }
 
+func (r *redisJobRepository) PublishMessage(jobID, title, message string) error {
+	reply := r.command("publish", jobID + ":" + title, message)
+
+	return reply.Err
+}
+
 func (r *redisJobRepository) command(cmd string, args ...interface{}) *redis.Reply {
 	client, err := r.pool.Get()
 	if err != nil {

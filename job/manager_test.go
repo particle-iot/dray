@@ -110,6 +110,7 @@ func (suite *JobManagerTestSuite) TestExecuteSuccess() {
 	suite.e.On("Inspect", suite.job).Return(nil)
 	suite.e.On("CleanUp", suite.job).Return(nil)
 
+	suite.r.On("PublishMessage", suite.job.ID, "executeStep", suite.job.currentStep().Source).Return(nil)
 	suite.r.On("Update", suite.job.ID, "status", "running").Return(nil)
 	suite.r.On("Update", suite.job.ID, "completedSteps", "1").Return(nil)
 	suite.r.On("Update", suite.job.ID, "status", "complete").Return(nil)
@@ -124,6 +125,7 @@ func (suite *JobManagerTestSuite) TestExecuteSuccess() {
 func (suite *JobManagerTestSuite) TestExecuteExecutorStartError() {
 	suite.e.On("Start", suite.job, mock.Anything, mock.Anything, mock.Anything).Return(suite.err)
 
+	suite.r.On("PublishMessage", suite.job.ID, "executeStep", suite.job.currentStep().Source).Return(nil)
 	suite.r.On("Update", suite.job.ID, "status", "running").Return(nil)
 	suite.r.On("Update", suite.job.ID, "status", "error").Return(nil)
 	suite.r.On("Update", suite.job.ID, "createdAt", mock.Anything).Return(nil)
@@ -141,6 +143,7 @@ func (suite *JobManagerTestSuite) TestExecuteContainerInspectError() {
 	suite.e.On("Inspect", suite.job).Return(suite.err)
 	suite.e.On("CleanUp", suite.job).Return(nil)
 
+	suite.r.On("PublishMessage", suite.job.ID, "executeStep", suite.job.currentStep().Source).Return(nil)
 	suite.r.On("Update", suite.job.ID, "status", "running").Return(nil)
 	suite.r.On("Update", suite.job.ID, "status", "error").Return(nil)
 	suite.r.On("Update", suite.job.ID, "createdAt", mock.Anything).Return(nil)
@@ -160,6 +163,7 @@ func (suite *JobManagerTestSuite) TestExecuteOutputLogging() {
 	suite.e.On("Inspect", suite.job).Return(nil)
 	suite.e.On("CleanUp", suite.job).Return(nil)
 
+	suite.r.On("PublishMessage", suite.job.ID, "executeStep", suite.job.currentStep().Source).Return(nil)
 	suite.r.On("Update", suite.job.ID, "status", "running").Return(nil)
 	suite.r.On("Update", suite.job.ID, "completedSteps", "1").Return(nil)
 	suite.r.On("AppendLogLine", suite.job.ID, suite.e.output).Return(nil)
@@ -181,6 +185,7 @@ func (suite *JobManagerTestSuite) TestRemoveDone() {
 	suite.e.On("Inspect", suite.job).Return(nil)
 	suite.e.On("CleanUp", suite.job).Return(nil)
 
+	suite.r.On("PublishMessage", suite.job.ID, "executeStep", suite.job.currentStep().Source).Return(nil)
 	suite.r.On("Update", suite.job.ID, "status", "running").Return(nil)
 	suite.r.On("Update", suite.job.ID, "completedSteps", "1").Return(nil)
 	suite.r.On("Update", suite.job.ID, "status", "complete").Return(nil)
