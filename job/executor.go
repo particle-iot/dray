@@ -65,6 +65,7 @@ func (e *jobStepExecutor) Inspect(j *Job) error {
 func (e *jobStepExecutor) CleanUp(j *Job) error {
 	removeOpts := docker.RemoveContainerOptions{
 		ID: j.currentStep().id,
+		RemoveVolumes: true,
 	}
 
 	err := e.client.RemoveContainer(removeOpts)
