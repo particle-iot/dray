@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 
+0.14.1 - 2016-10-03
+-------------------
+### Fixed
+- Remove job volumes after finishing
+
 0.14.0 - 2016-09-21
 -------------------
 ### Added
