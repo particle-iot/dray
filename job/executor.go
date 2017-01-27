@@ -92,10 +92,21 @@ func (e *jobStepExecutor) createContainer(j *Job) (string, error) {
 		},
 	}
 
+	opts.HostConfig = &docker.HostConfig{}
 	if step.usesFilePipe() {
-		opts.HostConfig = &docker.HostConfig{
-			Binds: []string{fmt.Sprintf("%s:%s", j.currentStepFilePipePath(), step.Output)},
-		}
+		opts.HostConfig.Binds = []string{fmt.Sprintf("%s:%s", j.currentStepFilePipePath(), step.Output)}
+	}
+
+	if step.setsNetworkMode() {
+		opts.HostConfig.NetworkMode = step.NetworkMode
+	}
+
+	if step.setsCpuShares() {
+		opts.HostConfig.CPUShares = step.CpuShares
+	}
+
+	if step.setsMemory() {
+		opts.HostConfig.Memory = step.Memory
 	}
 
 	container, err := e.client.CreateContainer(opts)
