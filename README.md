@@ -189,6 +189,9 @@ The response body will echo back the submitted job description including the ID 
 * `source` (`string`) - **Required.** Name of the Docker image to be executed for this step. If the tag is omitted from the image name, will default to "latest".
 * `output` (`string`) - **Optional.** Output channel to be captured and passed to the next step in the job. Valid values are "stdout", "stderr" or any absolute file path. Defaults to "stdout" if not specified. See the "Output Channels" section below for more details.
 * `refresh` (`boolean`) - **Optional.** Flag indicating whether or not the image identified by the *source* attribute should be refreshed before it is executed. A *true* value will force Dray to do a `docker pull` before the job step is started. A *false* value (the default) indicates that a `docker pull` should be done only if the image doesn't already exist in the local image cache.
+* `networkMode` (`string`) - **Optional.** Sets the networking mode for the container. Supported standard values are: `bridge`, `host`, `none`, and `container:<name|id>`. Any other value is taken as a custom network’s name to which this container should connect to.
+* `memory` (`int64`) - **Optional.** Memory limit in bytes.
+* `cpuShares` (`int64`) - **Optional.** An integer value containing the container’s CPU Shares (ie. the relative weight vs other containers).
 
 **Example Request:**
 

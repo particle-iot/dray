@@ -98,6 +98,9 @@ type JobStep struct {
 	BeginDelimiter string      `json:"beginDelimiter,omitempty"`
 	EndDelimiter   string      `json:"endDelimiter,omitempty"`
 	Refresh        bool        `json:"refresh,omitempty"`
+	NetworkMode    string      `json:"networkMode,omitempty"`
+	CpuShares      int64       `json:"cpuShares,omitempty"`
+	Memory         int64       `json:"memory,omitempty"`
 
 	id string
 }
@@ -116,6 +119,18 @@ func (js JobStep) usesFilePipe() bool {
 
 func (js JobStep) usesDelimitedOutput() bool {
 	return len(js.BeginDelimiter) > 0 && len(js.EndDelimiter) > 0
+}
+
+func (js JobStep) setsNetworkMode() bool {
+	return js.NetworkMode != ""
+}
+
+func (js JobStep) setsCpuShares() bool {
+	return js.CpuShares > 0
+}
+
+func (js JobStep) setsMemory() bool {
+	return js.Memory > 0
 }
 
 // JobLog represents the log output of a job. The Index field contains the
