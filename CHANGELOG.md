@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 
+0.14.2 - 2017-01-30
+-------------------
+### Added
+- Passing network mode, CPU shares and memory config
+
 0.14.1 - 2016-10-03
 -------------------
 ### Fixed
