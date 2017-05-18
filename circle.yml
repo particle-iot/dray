@@ -10,8 +10,8 @@ general:
 
 dependencies:
   override:
-    - docker pull particle/golang-tester:latest
-    - docker pull particle/golang-builder:latest
+    - docker pull particle/golang-tester:1.8.1
+    - docker pull particle/golang-builder:1.8.1
 
 test:
   override:
