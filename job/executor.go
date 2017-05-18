@@ -50,7 +50,7 @@ func (e *jobStepExecutor) Start(j *Job, stdIn io.Reader, stdOut, stdErr io.Write
 
 func (e *jobStepExecutor) Stop(j *Job) error {
 	step := j.currentStep()
-	return e.client.StopContainer(step.id, uint(step.Timeout))
+	return e.client.StopContainer(step.id, 5)
 }
 
 func (e *jobStepExecutor) Inspect(j *Job) error {
