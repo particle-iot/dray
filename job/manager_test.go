@@ -6,9 +6,9 @@ import (
 	"io"
 	"testing"
 
+	"github.com/CenturyLinkLabs/dray/util"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
-	"github.com/CenturyLinkLabs/dray/util"
 )
 
 type JobManagerTestSuite struct {

@@ -55,7 +55,7 @@ func redisAuth() string {
 	u := redisUrl()
 	p := ""
 
-	if (u.User != nil) {
+	if u.User != nil {
 		p, _ = u.User.Password()
 	}
 	return p

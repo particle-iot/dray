@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/CenturyLinkLabs/dray/util"
 	log "github.com/Sirupsen/logrus"
 	"github.com/fzzy/radix/extra/pool"
 	"github.com/fzzy/radix/redis"
-	"github.com/CenturyLinkLabs/dray/util"
 )
 
 // NotFoundError is an error returned when a referenced Job cannot be found.
@@ -83,7 +83,7 @@ func (r *redisJobRepository) Create(job *Job) error {
 	totalSteps := string(len(job.Steps))
 	reply = r.command("hmset", jobKey(job.ID), "totalSteps", totalSteps, "completedSteps", "0", "status", "")
 
-	if (util.GetConfig().KeyTTL > 0) {
+	if util.GetConfig().KeyTTL > 0 {
 		defer r.command("expire", jobKey(job.ID), util.GetConfig().KeyTTL)
 	}
 
@@ -91,7 +91,7 @@ func (r *redisJobRepository) Create(job *Job) error {
 }
 
 func (r *redisJobRepository) DeleteFromIndex(jobID string) error {
-	reply :=  r.command("lrem", util.GetConfig().JobsKey, 0, jobID)
+	reply := r.command("lrem", util.GetConfig().JobsKey, 0, jobID)
 	return reply.Err
 }
 
@@ -114,7 +114,7 @@ func (r *redisJobRepository) Update(jobID, attr, value string) error {
 	reply := r.command("hset", jobKey(jobID), attr, value)
 
 	// Publish field update message
-	defer r.command("publish", jobID + ":" + attr, value)
+	defer r.command("publish", jobID+":"+attr, value)
 
 	return reply.Err
 }
@@ -131,14 +131,14 @@ func (r *redisJobRepository) GetJobLog(jobID string, index int) (*JobLog, error)
 func (r *redisJobRepository) AppendLogLine(jobID, logLine string) error {
 	reply := r.command("rpush", jobLogKey(jobID), logLine)
 
-	if (util.GetConfig().KeyTTL > 0) {
+	if util.GetConfig().KeyTTL > 0 {
 		defer r.command("expire", jobLogKey(jobID), util.GetConfig().KeyTTL)
 	}
 	return reply.Err
 }
 
 func (r *redisJobRepository) PublishMessage(jobID, title, message string) error {
-	reply := r.command("publish", jobID + ":" + title, message)
+	reply := r.command("publish", jobID+":"+title, message)
 
 	return reply.Err
 }
