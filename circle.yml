@@ -15,7 +15,7 @@ dependencies:
 
 test:
   override:
-    - docker run -v $(pwd):/src particle/golang-tester
+    - docker run -v $(pwd):/src particle/golang-tester:1.8.1
 
 deployment:
   hub:
