@@ -38,6 +38,7 @@ type JobRepository interface {
 // container has stopped.
 type JobStepExecutor interface {
 	Start(js *Job, stdIn io.Reader, stdOut, stdErr io.WriteCloser) error
+	Stop(js *Job) error
 	Inspect(js *Job) error
 	CleanUp(js *Job) error
 }
@@ -101,6 +102,7 @@ type JobStep struct {
 	NetworkMode    string      `json:"networkMode,omitempty"`
 	CpuShares      int64       `json:"cpuShares,omitempty"`
 	Memory         int64       `json:"memory,omitempty"`
+	Timeout        int64       `json:"timeout,omitempty"`
 
 	id string
 }

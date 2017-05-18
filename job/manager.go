@@ -1,9 +1,10 @@
 package job
 
 import (
-	b64 "encoding/base64"
 	"bufio"
 	"bytes"
+	b64 "encoding/base64"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -13,8 +14,8 @@ import (
 	"sync"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/CenturyLinkLabs/dray/util"
+	log "github.com/Sirupsen/logrus"
 )
 
 const (
@@ -105,7 +106,6 @@ func (jm *jobManager) Delete(job *Job) error {
 }
 
 func (jm *jobManager) executeStep(job *Job, stdIn io.Reader) (io.Reader, error) {
-	var wg sync.WaitGroup
 	var outBuffer, errBuffer io.Writer
 	var stepOutput io.Reader
 
@@ -138,19 +138,38 @@ func (jm *jobManager) executeStep(job *Job, stdIn io.Reader) (io.Reader, error) 
 	}
 	defer jm.executor.CleanUp(job)
 
-	wg.Add(2)
+	done := make(chan bool)
 
 	go func() {
-		defer wg.Done()
-		jm.capture(job, stdOutReader, outBuffer)
+		var wg sync.WaitGroup
+		wg.Add(2)
+
+		go func() {
+			defer wg.Done()
+			jm.capture(job, stdOutReader, outBuffer)
+		}()
+
+		go func() {
+			defer wg.Done()
+			jm.capture(job, stdErrReader, errBuffer)
+		}()
+
+		wg.Wait()
+		done <- true
 	}()
 
-	go func() {
-		defer wg.Done()
-		jm.capture(job, stdErrReader, errBuffer)
-	}()
-
-	wg.Wait()
+	if step.Timeout > 0 {
+		select {
+		case <-done:
+		case <-time.After(time.Duration(step.Timeout) * time.Second):
+			if err := jm.executor.Stop(job); err != nil {
+				return nil, err
+			}
+			return nil, errors.New("job step timed out")
+		}
+	} else {
+		<-done
+	}
 
 	if err := jm.executor.Inspect(job); err != nil {
 		return nil, err

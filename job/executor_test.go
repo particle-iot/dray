@@ -38,6 +38,10 @@ func (m *mockExecutor) Start(job *Job, stdIn io.Reader, stdOut, stdErr io.WriteC
 	return args.Error(0)
 }
 
+func (m *mockExecutor) Stop(job *Job) error {
+	return nil
+}
+
 func (m *mockExecutor) Inspect(job *Job) error {
 	args := m.Mock.Called(job)
 	return args.Error(0)

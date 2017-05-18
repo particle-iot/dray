@@ -48,6 +48,11 @@ func (e *jobStepExecutor) Start(j *Job, stdIn io.Reader, stdOut, stdErr io.Write
 	return nil
 }
 
+func (e *jobStepExecutor) Stop(j *Job) error {
+	step := j.currentStep()
+	return e.client.StopContainer(step.id, uint(step.Timeout))
+}
+
 func (e *jobStepExecutor) Inspect(j *Job) error {
 	container, err := e.client.InspectContainer(j.currentStep().id)
 
@@ -64,7 +69,7 @@ func (e *jobStepExecutor) Inspect(j *Job) error {
 
 func (e *jobStepExecutor) CleanUp(j *Job) error {
 	removeOpts := docker.RemoveContainerOptions{
-		ID: j.currentStep().id,
+		ID:            j.currentStep().id,
 		RemoveVolumes: true,
 	}
 
