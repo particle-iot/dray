@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+0.14.3 - 2017-06-02
+-------------------
+### Added
+- Stop a container if it runs longer than a set timeout
 
 0.14.2 - 2017-01-30
 -------------------
