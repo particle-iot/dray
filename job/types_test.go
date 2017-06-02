@@ -43,7 +43,7 @@ func TestJobCurrentStepEnvironment(t *testing.T) {
 
 func TestJobCurrentStepFilePipePath(t *testing.T) {
 	job := Job{
-		ID:           "foo",
+		ID:             "foo",
 		StepsCompleted: 0,
 	}
 

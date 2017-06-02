@@ -2,7 +2,7 @@ machine:
   services:
     - docker
   environment:
-    IMAGE_NAME: centurylink/dray
+    IMAGE_NAME: particle/dray
 
 general:
   artifacts:
@@ -10,18 +10,18 @@ general:
 
 dependencies:
   override:
-    - docker pull centurylink/golang-tester:latest
-    - docker pull centurylink/golang-builder:latest
+    - docker pull particle/golang-tester:1.8.1
+    - docker pull particle/golang-builder:1.8.1
 
 test:
   override:
-    - docker run -v $(pwd):/src centurylink/golang-tester
+    - docker run -v $(pwd):/src particle/golang-tester:1.8.1
 
 deployment:
   hub:
     branch: master
     commands:
-      - docker run -v $(pwd):/src centurylink/golang-builder:latest
+      - docker run -v $(pwd):/src particle/golang-builder:latest
       - docker build -t $IMAGE_NAME:dev .
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - docker push $IMAGE_NAME:dev

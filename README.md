@@ -192,6 +192,7 @@ The response body will echo back the submitted job description including the ID 
 * `networkMode` (`string`) - **Optional.** Sets the networking mode for the container. Supported standard values are: `bridge`, `host`, `none`, and `container:<name|id>`. Any other value is taken as a custom network’s name to which this container should connect to.
 * `memory` (`int64`) - **Optional.** Memory limit in bytes.
 * `cpuShares` (`int64`) - **Optional.** An integer value containing the container’s CPU Shares (ie. the relative weight vs other containers).
+* `timeout` (`int64`) - **Optional.** An integer value containing the timeout in seconds after which the container will be stopped. After the timeout passed, Dray will stop the container (with additional 5s timeout) and the `status` will be set to `error`.
 
 **Example Request:**
 

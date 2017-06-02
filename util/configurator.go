@@ -4,17 +4,17 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/kelseyhightower/envconfig"
 	log "github.com/Sirupsen/logrus"
+	"github.com/kelseyhightower/envconfig"
 )
 
 type ConfigSpecification struct {
-	DockerHost   string `envconfig:"DOCKER_HOST" default:"unix:///var/run/docker.sock"`
-	LogLevel     string `envconfig:"LOG_LEVEL" default:"info"`
-	RedisPort    string `envconfig:"REDIS_PORT"`
-	JobsKey      string `envconfig:"DRAY_JOBS_KEY" default:"jobs"`
-	KeyTTL       int `envconfig:"DRAY_KEY_TTL"`
-	RemoveDone   bool `envconfig:"DRAY_REMOVE_DONE"`
+	DockerHost string `envconfig:"DOCKER_HOST" default:"unix:///var/run/docker.sock"`
+	LogLevel   string `envconfig:"LOG_LEVEL" default:"info"`
+	RedisPort  string `envconfig:"REDIS_PORT"`
+	JobsKey    string `envconfig:"DRAY_JOBS_KEY" default:"jobs"`
+	KeyTTL     int    `envconfig:"DRAY_KEY_TTL"`
+	RemoveDone bool   `envconfig:"DRAY_REMOVE_DONE"`
 }
 
 type configurator struct {
