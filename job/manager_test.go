@@ -167,9 +167,10 @@ func (suite *JobManagerTestSuite) TestExecuteOutputLogging() {
 	suite.r.On("Update", suite.job.ID, "status", "running").Return(nil)
 	suite.r.On("Update", suite.job.ID, "completedSteps", "1").Return(nil)
 	suite.r.On("AppendLogLine", suite.job.ID, suite.e.output).Return(nil)
-	suite.r.On("Update", suite.job.ID, "status", "complete").Return(nil)
+	suite.r.On("SetOutput", suite.job.ID, mock.Anything).Return(nil)
 	suite.r.On("Update", suite.job.ID, "createdAt", mock.Anything).Return(nil)
 	suite.r.On("Update", suite.job.ID, "finishedIn", mock.Anything).Return(nil)
+	suite.r.On("Update", suite.job.ID, "status", "complete").Return(nil)
 
 	resultErr := suite.jm.Execute(suite.job)
 

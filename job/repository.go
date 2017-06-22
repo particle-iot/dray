@@ -143,6 +143,16 @@ func (r *redisJobRepository) PublishMessage(jobID, title, message string) error 
 	return reply.Err
 }
 
+func (r *redisJobRepository) SetOutput(jobID, value string) error {
+	reply := r.command("set", jobOutputKey(jobID), value)
+
+	if util.GetConfig().KeyTTL > 0 {
+		defer r.command("expire", jobOutputKey(jobID), util.GetConfig().KeyTTL)
+	}
+
+	return reply.Err
+}
+
 func (r *redisJobRepository) command(cmd string, args ...interface{}) *redis.Reply {
 	client, err := r.pool.Get()
 	if err != nil {
@@ -179,6 +189,10 @@ func jobKey(jobID string) string {
 
 func jobLogKey(jobID string) string {
 	return fmt.Sprintf("%s:%s:log", util.GetConfig().JobsKey, jobID)
+}
+
+func jobOutputKey(jobID string) string {
+	return fmt.Sprintf("%s:%s:output", util.GetConfig().JobsKey, jobID)
 }
 
 func pseudoUUID() (uuid string) {

@@ -52,3 +52,8 @@ func (m *mockRepository) PublishMessage(jobID, title, message string) error {
 	args := m.Mock.Called(jobID, title, message)
 	return args.Error(0)
 }
+
+func (m *mockRepository) SetOutput(jobID, value string) error {
+	args := m.Mock.Called(jobID, value)
+	return args.Error(0)
+}

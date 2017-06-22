@@ -88,9 +88,19 @@ func (jm *jobManager) Execute(job *Job) error {
 		status = statusComplete
 	}
 
-	jm.repository.Update(job.ID, fieldStatus, status)
+	// Save the output
+	buf := new(bytes.Buffer)
+	if capture != nil {
+		buf.ReadFrom(capture)
+		if buf.Len() > 0 {
+			jm.repository.SetOutput(job.ID, buf.String())
+		}
+	}
+
 	finishedIn := float32(time.Since(createdAt)) / float32(time.Second)
 	jm.repository.Update(job.ID, fieldFinishedIn, fmt.Sprintf("%f", finishedIn))
+	jm.repository.Update(job.ID, fieldStatus, status)
+
 	if util.GetConfig().RemoveDone {
 		jm.repository.DeleteFromIndex(job.ID)
 	}
@@ -171,10 +181,6 @@ func (jm *jobManager) executeStep(job *Job, stdIn io.Reader) (io.Reader, error) 
 		<-done
 	}
 
-	if err := jm.executor.Inspect(job); err != nil {
-		return nil, err
-	}
-
 	if step.usesFilePipe() {
 		// Grab data written to pipe file
 		b, err := ioutil.ReadFile(job.currentStepFilePipePath())
@@ -183,6 +189,10 @@ func (jm *jobManager) executeStep(job *Job, stdIn io.Reader) (io.Reader, error) 
 		}
 
 		stepOutput = bytes.NewBuffer(b)
+	}
+
+	if err := jm.executor.Inspect(job); err != nil {
+		return stepOutput, err
 	}
 
 	return stepOutput, nil

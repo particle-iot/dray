@@ -438,6 +438,10 @@ There is one other bit of configuration that is also required when using a custo
 
 Note the addition of the `-v /tmp:/tmp` flag in the Docker `run` command above. This setting is required **only** if you intend to use custom files as a data-passing mechanism and can be omitted otherwise.
 
+#### Storing result of the last step
+
+When the last step defined a custom file in `output` then it's contents will be stored in Redis under `jobs:JOB_ID:output` key.
+
 ## Building
 
 To facilitate the creation of small Docker image, Dray is compiled into a statically linked binary that can be run with no external dependencies.
