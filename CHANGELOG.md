@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+0.14.4 - 2017-07-27
+-------------------
+### Added
+- Ability to store result of the last step in Redis
+
 0.14.3 - 2017-06-02
 -------------------
 ### Added
