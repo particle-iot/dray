@@ -5,7 +5,7 @@ import (
 	"io"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/fsouza/go-dockerclient"
+	docker "github.com/fsouza/go-dockerclient"
 )
 
 type jobStepExecutor struct {
@@ -180,7 +180,20 @@ func (e *jobStepExecutor) pullImage(name string) error {
 		Repository: name,
 	}
 
-	return e.client.PullImage(opts, docker.AuthConfiguration{})
+	auth := docker.AuthConfiguration{}
+	auths, err := docker.NewAuthConfigurationsFromDockerCfg()
+	if err != nil {
+		log.Warnf("Unable to load docker config from file, we might encounter pull rate limiting: %v", err)
+	} else {
+		cfg, ok := auths.Configs["index.docker.io"]
+		if !ok {
+			log.Warnf("Unable to load auth config for index.docker.io, we might encounter pull rate limiting")
+		} else {
+			auth = cfg
+		}
+	}
+
+	return e.client.PullImage(opts, auth)
 }
 
 func (e *jobStepExecutor) removeImage(name string) error {

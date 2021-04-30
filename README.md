@@ -122,6 +122,8 @@ Environment variables can be passed to the Dray container by using the `-e` flag
 
 * `DRAY_REMOVE_DONE` - if true, remove done jobs (either "complete" or "error") from [listing](#list-jobs).
 
+* `DOCKER_CONFIG` - path to the docker config.json to use for authentication
+
 ## Example
 Below is an actual Dray job description that is being used as part of the [Panamax](http://panamax.io/) project. The goal of this job is to provision a cluster of servers on AWS and then install some software on those servers.
 
