@@ -3,10 +3,36 @@ package job
 import (
 	"fmt"
 	"io"
+	"os"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/fsouza/go-dockerclient"
+	docker "github.com/fsouza/go-dockerclient"
 )
+
+var dockerAuthenticationConfig = docker.AuthConfiguration{}
+
+func init() {
+	authConfigPath := os.Getenv("DOCKER_CONFIG_FILE")
+	if authConfigPath == "" {
+		log.Warnf("No docker authentication configured, we might encounter pull rate limiting.  Set DOCKER_CONFIG_FILE to a valid config.json file.")
+		return
+	}
+
+	auths, err := docker.NewAuthConfigurationsFromFile(authConfigPath)
+	if err != nil {
+		log.Warnf("Unable to load docker config from file, we might encounter pull rate limiting: %v", err)
+		return
+	}
+
+	cfg, ok := auths.Configs["index.docker.io"]
+	if !ok {
+		log.Warnf("Unable to load auth config for index.docker.io, we might encounter pull rate limiting")
+		return
+	}
+
+	log.Infof("Loaded docker credentials for %s", cfg.Username)
+	dockerAuthenticationConfig = cfg
+}
 
 type jobStepExecutor struct {
 	client *docker.Client
@@ -180,7 +206,7 @@ func (e *jobStepExecutor) pullImage(name string) error {
 		Repository: name,
 	}
 
-	return e.client.PullImage(opts, docker.AuthConfiguration{})
+	return e.client.PullImage(opts, dockerAuthenticationConfig)
 }
 
 func (e *jobStepExecutor) removeImage(name string) error {

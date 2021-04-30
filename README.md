@@ -122,6 +122,8 @@ Environment variables can be passed to the Dray container by using the `-e` flag
 
 * `DRAY_REMOVE_DONE` - if true, remove done jobs (either "complete" or "error") from [listing](#list-jobs).
 
+* `DOCKER_CONFIG_FILE` - path to the docker config.json to use for authentication
+
 ## Example
 Below is an actual Dray job description that is being used as part of the [Panamax](http://panamax.io/) project. The goal of this job is to provision a cluster of servers on AWS and then install some software on those servers.
 
@@ -446,4 +448,4 @@ When the last step defined a custom file in `output` then it's contents will be 
 
 To facilitate the creation of small Docker image, Dray is compiled into a statically linked binary that can be run with no external dependencies.
 
-The `build.sh` script included in the Dray repository will compile the executable and create the Docker image by leveraging the [centurylink\golang-builder](https://registry.hub.docker.com/u/centurylink/golang-builder/) image. The resulting image is tagged as `centurylink/dray:latest`.
+The image is built using the Dockerfile in this repo.  For convenience `make docker` will build and push an image with a `local-<commit hash>` tag.
