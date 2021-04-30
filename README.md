@@ -448,4 +448,4 @@ When the last step defined a custom file in `output` then it's contents will be 
 
 To facilitate the creation of small Docker image, Dray is compiled into a statically linked binary that can be run with no external dependencies.
 
-The `build.sh` script included in the Dray repository will compile the executable and create the Docker image by leveraging the [centurylink\golang-builder](https://registry.hub.docker.com/u/centurylink/golang-builder/) image. The resulting image is tagged as `centurylink/dray:latest`.
+The image is built using the Dockerfile in this repo.  For convenience `make docker` will build and push an image with a `local-<commit hash>` tag.
