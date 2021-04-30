@@ -80,7 +80,7 @@ func (r *redisJobRepository) Create(job *Job) error {
 		return reply.Err
 	}
 
-	totalSteps := string(len(job.Steps))
+	totalSteps := fmt.Sprintf("%d", len(job.Steps))
 	reply = r.command("hmset", jobKey(job.ID), "totalSteps", totalSteps, "completedSteps", "0", "status", "")
 
 	if util.GetConfig().KeyTTL > 0 {
