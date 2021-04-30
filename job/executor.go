@@ -30,6 +30,7 @@ func init() {
 		return
 	}
 
+	log.Infof("Loaded docker credentials for %s", cfg.Username)
 	dockerAuthenticationConfig = cfg
 }
 
