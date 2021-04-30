@@ -115,7 +115,6 @@ func (suite *APITestSuite) TestListJobsError() {
 	body, _ := ioutil.ReadAll(res.Body)
 
 	suite.Equal(http.StatusInternalServerError, res.StatusCode)
-	suite.Equal("text/plain; charset=utf-8", res.Header["Content-Type"][0])
 	suite.Equal("", string(body))
 	suite.jm.Mock.AssertExpectations(suite.T())
 }
