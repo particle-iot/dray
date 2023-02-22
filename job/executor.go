@@ -1,6 +1,7 @@
 package job
 
 import (
+	"archive/tar"
 	"bytes"
 	"fmt"
 	"io"
@@ -156,8 +157,22 @@ func (e *jobStepExecutor) DownloadOutput(j *Job) (io.Reader, error) {
 		Path:         step.Output,
 	})
 
+	if err != nil {
+		return nil, err
+	}
+
 	// Download from container is supposed to return a tar stream.  Do we need to unwrap the tar?
-	return outputBuffer, err
+	r := tar.NewReader(outputBuffer)
+	h, err := r.Next()
+	if err != nil {
+		return nil, err
+	}
+	log.Debugf("Tar header type: %v -- name: %v", h.Typeflag, h.Name)
+	if h.Typeflag == tar.TypeReg {
+		return r, nil
+	} else {
+		return nil, fmt.Errorf("first header in tar not a file.  This is unexpected.  Found header type: %v", h.Typeflag)
+	}
 }
 
 func (e *jobStepExecutor) attachContainer(id string, stdIn io.Reader, stdOut, stdErr io.Writer) error {
