@@ -41,19 +41,6 @@ func TestJobCurrentStepEnvironment(t *testing.T) {
 	assert.Contains(t, env, var6)
 }
 
-func TestJobCurrentStepFilePipePath(t *testing.T) {
-	job := Job{
-		ID:             "foo",
-		StepsCompleted: 0,
-	}
-
-	assert.Equal(t, "/tmp/foo-0", job.currentStepFilePipePath())
-
-	job.StepsCompleted = 1
-	// Test if next step has different file pipe
-	assert.Equal(t, "/tmp/foo-1", job.currentStepFilePipePath())
-}
-
 func TestJobStepUsesStdOutPipe(t *testing.T) {
 	js := JobStep{}
 	assert.True(t, js.usesStdOutPipe())

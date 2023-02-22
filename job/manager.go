@@ -7,8 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
-	"os"
 	"strconv"
 	"strings"
 	"sync"
@@ -123,15 +121,7 @@ func (jm *jobManager) executeStep(job *Job, stdIn io.Reader) (io.Reader, error) 
 	stdOutReader, stdOutWriter := io.Pipe()
 	stdErrReader, stdErrWriter := io.Pipe()
 
-	if step.usesFilePipe() {
-		f, err := os.Create(job.currentStepFilePipePath())
-		if err != nil {
-			return nil, err
-		}
-
-		f.Close()
-		defer os.Remove(job.currentStepFilePipePath())
-	} else {
+	if !step.usesFilePipe() {
 		buffer := &bytes.Buffer{}
 		stepOutput = buffer
 
@@ -183,12 +173,10 @@ func (jm *jobManager) executeStep(job *Job, stdIn io.Reader) (io.Reader, error) 
 
 	if step.usesFilePipe() {
 		// Grab data written to pipe file
-		b, err := ioutil.ReadFile(job.currentStepFilePipePath())
+		stepOutput, err = jm.executor.DownloadOutput(job)
 		if err != nil {
 			return nil, err
 		}
-
-		stepOutput = bytes.NewBuffer(b)
 	}
 
 	if err := jm.executor.Inspect(job); err != nil {

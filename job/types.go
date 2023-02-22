@@ -42,6 +42,7 @@ type JobStepExecutor interface {
 	Stop(js *Job) error
 	Inspect(js *Job) error
 	CleanUp(js *Job) error
+	DownloadOutput(js *Job) (io.Reader, error)
 }
 
 // Job describes the data necessary for Dray to process a job.
@@ -81,12 +82,6 @@ func (j Job) defaultStepEnvironment() Environment {
 func (j Job) currentStepEnvironment() Environment {
 	defaultEnvironment := append(j.Environment, j.defaultStepEnvironment()...)
 	return append(defaultEnvironment, j.currentStep().Environment...)
-}
-
-// CurrentStepFilePipePath returns file pipe path for the current step based on
-// job's ID and step's index
-func (j Job) currentStepFilePipePath() string {
-	return fmt.Sprintf("/tmp/%s-%d", j.ID, j.StepsCompleted)
 }
 
 // JobStep represents one of the individual steps in a Dray Job. A job step is

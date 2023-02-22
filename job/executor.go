@@ -1,6 +1,7 @@
 package job
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -124,9 +125,6 @@ func (e *jobStepExecutor) createContainer(j *Job) (string, error) {
 	}
 
 	opts.HostConfig = &docker.HostConfig{}
-	if step.usesFilePipe() {
-		opts.HostConfig.Binds = []string{fmt.Sprintf("%s:%s", j.currentStepFilePipePath(), step.Output)}
-	}
 
 	if step.setsNetworkMode() {
 		opts.HostConfig.NetworkMode = step.NetworkMode
@@ -148,6 +146,18 @@ func (e *jobStepExecutor) createContainer(j *Job) (string, error) {
 	}
 
 	return "", err
+}
+
+func (e *jobStepExecutor) DownloadOutput(j *Job) (io.Reader, error) {
+	step := j.currentStep()
+	outputBuffer := new(bytes.Buffer)
+	err := e.client.DownloadFromContainer(step.id, docker.DownloadFromContainerOptions{
+		OutputStream: outputBuffer,
+		Path:         step.Output,
+	})
+
+	// Download from container is supposed to return a tar stream.  Do we need to unwrap the tar?
+	return outputBuffer, err
 }
 
 func (e *jobStepExecutor) attachContainer(id string, stdIn io.Reader, stdOut, stdErr io.Writer) error {
