@@ -136,7 +136,7 @@ func (jm *jobManager) executeStep(job *Job, stdIn io.Reader) (io.Reader, error) 
 	if err != nil {
 		return nil, err
 	}
-	defer jm.executor.CleanUp(job)
+	// defer jm.executor.CleanUp(job)
 
 	done := make(chan bool)
 
