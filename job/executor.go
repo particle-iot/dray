@@ -161,13 +161,13 @@ func (e *jobStepExecutor) DownloadOutput(j *Job) (io.Reader, error) {
 		return nil, err
 	}
 
-	// Download from container is supposed to return a tar stream.  Do we need to unwrap the tar?
+	// The output should be a tar stream containing a single file.
 	r := tar.NewReader(outputBuffer)
 	h, err := r.Next()
 	if err != nil {
 		return nil, err
 	}
-	log.Debugf("Tar header type: %v -- name: %v", h.Typeflag, h.Name)
+
 	if h.Typeflag == tar.TypeReg {
 		return r, nil
 	} else {
