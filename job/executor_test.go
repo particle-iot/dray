@@ -38,6 +38,10 @@ func (m *mockExecutor) Start(job *Job, stdIn io.Reader, stdOut, stdErr io.WriteC
 	return args.Error(0)
 }
 
+func (m *mockExecutor) DownloadOutput(job *Job) (io.Reader, error) {
+	return new(bytes.Buffer), nil
+}
+
 func (m *mockExecutor) Stop(job *Job) error {
 	return nil
 }
